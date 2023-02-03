@@ -3,6 +3,15 @@ import Box from "@mui/material/Box";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+
+interface GridLayoutProps {
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClickSort: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  numRectangles: number;
+  rectangles: JSX.Element[];
+  svgRef: React.RefObject<SVGSVGElement>;
+}
 
 const RootStyles = styled(Paper)(({ theme }) => ({
   minHeight: "80vh",
@@ -23,7 +32,13 @@ const InputStyles = styled(Paper)(({ theme }) => ({
   backgroundColor: "#f0f0f0",
 }));
 
-function GridLayout({ numRectangles, handleChange, rectangles, svgRef }) {
+const GridLayout: React.FC<GridLayoutProps> = ({
+  handleChange,
+  handleClickSort,
+  numRectangles,
+  rectangles,
+  svgRef,
+}) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
@@ -32,7 +47,7 @@ function GridLayout({ numRectangles, handleChange, rectangles, svgRef }) {
             <svg ref={svgRef}>{rectangles}</svg>
           </RootStyles>
         </Grid>
-        <Grid item xs={12}>
+        <Grid item xs={4}>
           <InputStyles>
             <TextField
               label="Number of rectangles"
@@ -42,9 +57,14 @@ function GridLayout({ numRectangles, handleChange, rectangles, svgRef }) {
             />
           </InputStyles>
         </Grid>
+        <Grid item xs={8}>
+          <Button color="primary" variant="outlined" onClick={handleClickSort}>
+            Sort
+          </Button>
+        </Grid>
       </Grid>
     </Box>
   );
-}
+};
 
 export default GridLayout;
