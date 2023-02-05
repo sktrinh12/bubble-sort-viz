@@ -8,9 +8,11 @@ import Button from "@mui/material/Button";
 interface GridLayoutProps {
   handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleClickSort: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleClickReset: (event: React.MouseEvent<HTMLButtonElement>) => void;
   numRectangles: number;
   rectangles: JSX.Element[];
   svgRef: React.RefObject<SVGSVGElement>;
+  isDisabled: boolean;
 }
 
 const RootStyles = styled(Paper)(({ theme }) => ({
@@ -23,21 +25,14 @@ const RootStyles = styled(Paper)(({ theme }) => ({
   svg: { width: "100%", height: "80vh" },
 }));
 
-// const SvgStyles = styled(Paper)(({ theme }) => ({
-//   backgroundColor: "#e0e0e0",
-// }));
-
-const InputStyles = styled(Paper)(({ theme }) => ({
-  width: "38%",
-  backgroundColor: "#f0f0f0",
-}));
-
 const GridLayout: React.FC<GridLayoutProps> = ({
   handleChange,
   handleClickSort,
+  handleClickReset,
   numRectangles,
   rectangles,
   svgRef,
+  isDisabled,
 }) => {
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -48,18 +43,33 @@ const GridLayout: React.FC<GridLayoutProps> = ({
           </RootStyles>
         </Grid>
         <Grid item xs={4}>
-          <InputStyles>
-            <TextField
-              label="Number of rectangles"
-              type="number"
-              value={numRectangles}
-              onChange={handleChange}
-            />
-          </InputStyles>
+          <TextField
+            label="No. rectangles"
+            type="number"
+            value={numRectangles}
+            onChange={handleChange}
+            disabled={isDisabled}
+          />
         </Grid>
-        <Grid item xs={8}>
-          <Button color="primary" variant="outlined" onClick={handleClickSort}>
+        <Grid item xs={3}>
+          <Button
+            size="large"
+            color="primary"
+            variant="outlined"
+            onClick={handleClickSort}
+            disabled={isDisabled}
+          >
             Sort
+          </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <Button
+            size="large"
+            color="secondary"
+            variant="outlined"
+            onClick={handleClickReset}
+          >
+            Reset
           </Button>
         </Grid>
       </Grid>
