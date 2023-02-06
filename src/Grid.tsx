@@ -1,34 +1,56 @@
-import { styled } from "@mui/material/styles";
 import Box from "@mui/material/Box";
-import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import SVG from "./SVG";
+import ColourPicker from "./ColourPicker";
 
 interface GridLayoutProps {
-  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  handleChangeNumRect: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleClickSort: (event: React.MouseEvent<HTMLButtonElement>) => void;
   handleClickReset: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  handleClickColourPrimary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleCloseColourPrimary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleChangeColourPrimary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleClickColourSecondary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleCloseColourSecondary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  handleChangeColourSecondary: (
+    event: React.MouseEvent<HTMLButtonElement>
+  ) => void;
+  colourSecondary: string;
+  colourPrimary: string;
+  displayColorPickerPrimary: boolean;
+  displayColorPickerSecondary: boolean;
   numRectangles: number;
   rectangles: JSX.Element[];
   svgRef: React.RefObject<SVGSVGElement>;
   isDisabled: boolean;
 }
 
-const RootStyles = styled(Paper)(({ theme }) => ({
-  minHeight: "80vh",
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(2),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-  svg: { width: "100%", height: "80vh" },
-}));
-
 const GridLayout: React.FC<GridLayoutProps> = ({
-  handleChange,
+  handleChangeNumRect,
   handleClickSort,
   handleClickReset,
+  handleClickColourPrimary,
+  handleCloseColourPrimary,
+  handleChangeColourPrimary,
+  handleClickColourSecondary,
+  handleCloseColourSecondary,
+  handleChangeColourSecondary,
+  colourSecondary,
+  colourPrimary,
+  displayColorPickerPrimary,
+  displayColorPickerSecondary,
   numRectangles,
   rectangles,
   svgRef,
@@ -38,20 +60,18 @@ const GridLayout: React.FC<GridLayoutProps> = ({
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-          <RootStyles>
-            <svg ref={svgRef}>{rectangles}</svg>
-          </RootStyles>
+          <SVG svgRef={svgRef} rectangles={rectangles} />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={3}>
           <TextField
             label="No. rectangles"
             type="number"
             value={numRectangles}
-            onChange={handleChange}
+            onChange={handleChangeNumRect}
             disabled={isDisabled}
           />
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Button
             size="large"
             color="primary"
@@ -62,7 +82,7 @@ const GridLayout: React.FC<GridLayoutProps> = ({
             Sort
           </Button>
         </Grid>
-        <Grid item xs={3}>
+        <Grid item xs={2}>
           <Button
             size="large"
             color="secondary"
@@ -71,6 +91,20 @@ const GridLayout: React.FC<GridLayoutProps> = ({
           >
             Reset
           </Button>
+        </Grid>
+        <Grid item xs={3}>
+          <ColourPicker
+            colourPrimary={colourPrimary}
+            colourSecondary={colourSecondary}
+            displayColorPickerPrimary={displayColorPickerPrimary}
+            handleCloseColourPrimary={handleCloseColourPrimary}
+            handleClickColourPrimary={handleClickColourPrimary}
+            handleChangeColourPrimary={handleChangeColourPrimary}
+            displayColorPickerSecondary={displayColorPickerSecondary}
+            handleCloseColourSecondary={handleCloseColourSecondary}
+            handleClickColourSecondary={handleClickColourSecondary}
+            handleChangeColourSecondary={handleChangeColourSecondary}
+          />
         </Grid>
       </Grid>
     </Box>
