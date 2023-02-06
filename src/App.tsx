@@ -1,11 +1,19 @@
 import { useState, createRef, useEffect, useRef, RefObject } from "react";
 import GridLayout from "./Grid";
 import Rectangle from "./Rectangle";
+import BasicModal from "./BasicModal";
 
-const highlight = "#296178";
 const RectangleGenerator = () => {
   const [numRectangles, setNumRectangles] = useState<number>(0);
-  const [colour, setColour] = useState<string>("#4e4a8e");
+  const [colourPrimary, setColourPrimary] = useState<string>("#4e4a8e");
+  const [colourSecondary, setColourSecondary] = useState<string>("#296178");
+  const [displayColorPickerPrimary, setDisplayColorPickerPrimary] = useState(
+    false
+  );
+  const [
+    displayColorPickerSecondary,
+    setDisplayColorPickerSecondary,
+  ] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
   const [rectangles, setRectangles] = useState<
@@ -14,13 +22,39 @@ const RectangleGenerator = () => {
   const [rectRefs, setRectRefs] = useState<Array<RefObject<SVGRectElement>>>(
     []
   );
+  const [openModal, setOpenModal] = useState(false);
+  const handleCloseModal = () => setOpenModal(false);
+
+  const handleClickColourPrimary = () => {
+    setDisplayColorPickerPrimary(!displayColorPickerPrimary);
+  };
+
+  const handleClickColourSecondary = () => {
+    setDisplayColorPickerSecondary(!displayColorPickerSecondary);
+  };
+
+  const handleCloseColourPrimary = () => {
+    setDisplayColorPickerPrimary(false);
+  };
+
+  const handleCloseColourSecondary = () => {
+    setDisplayColorPickerSecondary(false);
+  };
+
+  const handleChangeColourPrimary = (color: any) => {
+    setColourPrimary((prevColour) => color.hex);
+  };
+
+  const handleChangeColourSecondary = (color: any) => {
+    setColourSecondary((prevColour) => color.hex);
+  };
 
   const handleClickReset = () => {
     setIsDisabled(false);
     setNumRectangles(0);
   };
 
-  const handleChange = (event: any) => {
+  const handleChangeNumRect = (event: any) => {
     if (event.target.value > -1) {
       setNumRectangles(event.target.value);
     } else {
@@ -41,11 +75,15 @@ const RectangleGenerator = () => {
           if (arr[j].height > arr[j + 1].height) {
             const currX = currRect.getAttribute("x");
             const nextX = nextRect.getAttribute("x");
-            currRect.setAttribute("fill", `${highlight}`);
-            nextRect.setAttribute("fill", `${highlight}`);
+            currRect.setAttribute("fill", `${colourSecondary}`);
+            nextRect.setAttribute("fill", `${colourSecondary}`);
+            currRect.setAttribute("filter", "url(#glow)");
+            nextRect.setAttribute("filter", "url(#glow)");
             setTimeout(() => {
-              currRect.setAttribute("fill", `${colour}`);
-              nextRect.setAttribute("fill", `${colour}`);
+              currRect.setAttribute("fill", `${colourPrimary}`);
+              nextRect.setAttribute("fill", `${colourPrimary}`);
+              currRect.setAttribute("filter", "none");
+              nextRect.setAttribute("filter", "none");
             }, 350);
             currRect.setAttribute("x", nextX.toString());
             nextRect.setAttribute("x", currX.toString());
@@ -60,7 +98,12 @@ const RectangleGenerator = () => {
         delay += 400;
       }
     }
+    setTimeout(() => {
+      setOpenModal(true);
+    }, delay);
   };
+
+  // useEffect(() => {}, [colourPrimary]);
 
   useEffect(() => {
     const genRect = () => {
@@ -83,7 +126,7 @@ const RectangleGenerator = () => {
               xWidth={xWidth}
               randomHeight={randomHeight}
               yHeight={yHeight}
-              colour={colour}
+              colour={colourPrimary}
             />
           ),
           height: yHeight,
@@ -98,15 +141,28 @@ const RectangleGenerator = () => {
   }, [numRectangles]);
 
   return (
-    <GridLayout
-      handleChange={handleChange}
-      handleClickSort={handleClickSort}
-      numRectangles={numRectangles}
-      rectangles={rectangles.map((rect) => rect.element)}
-      svgRef={svgRef}
-      isDisabled={isDisabled}
-      handleClickReset={handleClickReset}
-    />
+    <>
+      <GridLayout
+        handleChangeNumRect={handleChangeNumRect}
+        handleClickSort={handleClickSort}
+        numRectangles={numRectangles}
+        rectangles={rectangles.map((rect) => rect.element)}
+        svgRef={svgRef}
+        isDisabled={isDisabled}
+        colourPrimary={colourPrimary}
+        colourSecondary={colourSecondary}
+        displayColorPickerSecondary={displayColorPickerSecondary}
+        displayColorPickerPrimary={displayColorPickerPrimary}
+        handleClickReset={handleClickReset}
+        handleClickColourSecondary={handleClickColourSecondary}
+        handleClickColourPrimary={handleClickColourPrimary}
+        handleCloseColourSecondary={handleCloseColourSecondary}
+        handleCloseColourPrimary={handleCloseColourPrimary}
+        handleChangeColourPrimary={handleChangeColourPrimary}
+        handleChangeColourSecondary={handleChangeColourSecondary}
+      />
+      <BasicModal openModal={openModal} handleCloseModal={handleCloseModal} />
+    </>
   );
 };
 
